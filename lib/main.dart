@@ -30,18 +30,22 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: ListView(
         children: [
-          BlocBuilder<NewsBloc, NewsState>(
-            builder: (_, newsState) {
-              if (newsState is NewsLoaded) {
-                List<News> newsData = newsState.news.sublist(0, 1);
-                return Center(
-                  child: NewsCard(
-                    urlToImg: newsData[0].urlToImage,
-                    title: newsData[0].title,
-                  ),
-                );
-              }
-            },
+          Container(
+            child: BlocBuilder<NewsBloc, NewsState>(
+              builder: (_, newsState) {
+                if (newsState is NewsLoaded) {
+                  List<News> newsData = newsState.news.sublist(0, 1);
+                  return Center(
+                    child: NewsCard(
+                      urlToImg: newsData[0].urlToImage,
+                      title: newsData[0].title,
+                    ),
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
           ),
           Center(
             child: Wrap(
@@ -67,79 +71,75 @@ class HomePage extends StatelessWidget {
               ],
             ),
           ),
-          BlocBuilder<NewsBloc, NewsState>(
-            builder: (_, newsState) {
-              if (newsState is NewsLoaded) {
-                List<News> newsData = newsState.news.sublist(2, 20);
-                return ListView.builder(
-                  itemCount: newsData.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) => Padding(
-                    padding: EdgeInsets.fromLTRB(5, 20, 5, 10),
-                    child: Container(
-                      height: 100,
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 100,
-                            width: 80,
-                            decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(15),
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                        newsData[index].urlToImage),
-                                    fit: BoxFit.cover)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    newsData[index].title,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    newsData[index].description,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    newsData[index].publishedAt,
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                  ),
-                                )
-                              ],
+          Container(
+            child: BlocBuilder<NewsBloc, NewsState>(
+              builder: (_, newsState) {
+                if (newsState is NewsLoaded) {
+                  List<News> newsData = newsState.news.sublist(2, 20);
+                  return ListView.builder(
+                    itemCount: newsData.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) => Padding(
+                      padding: EdgeInsets.fromLTRB(5, 20, 5, 10),
+                      child: Container(
+                        height: 100,
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 100,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(15),
+                                  image: DecorationImage(
+                                      image: NetworkImage(
+                                          newsData[index].urlToImage),
+                                      fit: BoxFit.cover)),
                             ),
-                          )
-                        ],
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      newsData[index].title,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      newsData[index].description,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                    Text(
+                                      newsData[index].publishedAt,
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }
-            },
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
           ),
         ],
       ),
