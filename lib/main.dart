@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:indonesia/indonesia.dart';
 import 'package:news_app/bloc/news_bloc.dart';
 import 'package:news_app/models/models.dart';
 
@@ -27,6 +28,9 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    DateTime date = DateTime.now();
+    String parsedDate = tanggal(date);
+
     return SafeArea(
       child: ListView(
         children: [
@@ -73,6 +77,20 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      parsedDate.toString(),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                      maxLines: 3,
+                    ),
+                  ),
+                ),
                 BlocBuilder<NewsBloc, NewsState>(
                   builder: (_, newsState) {
                     if (newsState is NewsLoaded) {
@@ -87,7 +105,8 @@ class HomePage extends StatelessWidget {
                             title: newsData[index].title,
                             description: newsData[index].description,
                             urlToImg: newsData[index].urlToImage,
-                            publishedAt: newsData[index].title,
+                            publishedAt:
+                                newsData[index].publishedAt.substring(0, 10),
                           ),
                         ),
                       );
@@ -124,7 +143,7 @@ class NewsList extends StatelessWidget {
             height: 100,
             width: 80,
             decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.grey,
                 borderRadius: BorderRadius.circular(15),
                 image: DecorationImage(
                     image: NetworkImage(urlToImg), fit: BoxFit.cover)),
@@ -139,15 +158,15 @@ class NewsList extends StatelessWidget {
                     title,
                     style: TextStyle(
                         color: Colors.black,
-                        fontSize: 14,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold),
-                    maxLines: 3,
+                    maxLines: 2,
                   ),
                   Text(
                     description,
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 12,
+                      fontSize: 14,
                     ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -156,7 +175,7 @@ class NewsList extends StatelessWidget {
                     publishedAt,
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: 10,
+                      fontSize: 12,
                     ),
                     maxLines: 1,
                   ),
