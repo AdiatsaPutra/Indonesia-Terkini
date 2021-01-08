@@ -30,117 +30,140 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: ListView(
         children: [
-          Container(
-            child: BlocBuilder<NewsBloc, NewsState>(
-              builder: (_, newsState) {
-                if (newsState is NewsLoaded) {
-                  List<News> newsData = newsState.news.sublist(0, 1);
-                  return Center(
-                    child: NewsCard(
-                      urlToImg: newsData[0].urlToImage,
-                      title: newsData[0].title,
-                    ),
-                  );
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
-          ),
-          Center(
-            child: Wrap(
+          SingleChildScrollView(
+            physics: ScrollPhysics(),
+            child: Column(
               children: [
-                CategoryChip(
-                  categoryText: 'Bisnis',
+                BlocBuilder<NewsBloc, NewsState>(
+                  builder: (_, newsState) {
+                    if (newsState is NewsLoaded) {
+                      List<News> newsData = newsState.news.sublist(0, 1);
+                      return Center(
+                        child: NewsCard(
+                          urlToImg: newsData[0].urlToImage,
+                          title: newsData[0].title,
+                        ),
+                      );
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  },
                 ),
-                CategoryChip(
-                  categoryText: 'Entertainment',
+                Center(
+                  child: Wrap(
+                    children: [
+                      CategoryChip(
+                        categoryText: 'Bisnis',
+                      ),
+                      CategoryChip(
+                        categoryText: 'Entertainment',
+                      ),
+                      CategoryChip(
+                        categoryText: 'Kesehatan',
+                      ),
+                      CategoryChip(
+                        categoryText: 'Science',
+                      ),
+                      CategoryChip(
+                        categoryText: 'Olahraga',
+                      ),
+                      CategoryChip(
+                        categoryText: 'Technology',
+                      ),
+                    ],
+                  ),
                 ),
-                CategoryChip(
-                  categoryText: 'Kesehatan',
-                ),
-                CategoryChip(
-                  categoryText: 'Science',
-                ),
-                CategoryChip(
-                  categoryText: 'Olahraga',
-                ),
-                CategoryChip(
-                  categoryText: 'Technology',
+                BlocBuilder<NewsBloc, NewsState>(
+                  builder: (_, newsState) {
+                    if (newsState is NewsLoaded) {
+                      List<News> newsData = newsState.news.sublist(2, 20);
+                      return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: newsData.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) => Padding(
+                          padding: EdgeInsets.fromLTRB(5, 20, 5, 10),
+                          child: NewsList(
+                            title: newsData[index].title,
+                            description: newsData[index].description,
+                            urlToImg: newsData[index].urlToImage,
+                            publishedAt: newsData[index].title,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  },
                 ),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class NewsList extends StatelessWidget {
+  final String urlToImg;
+  final String title;
+  final String description;
+  final String publishedAt;
+
+  const NewsList(
+      {this.urlToImg, this.title, this.description, this.publishedAt});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        children: [
           Container(
-            child: BlocBuilder<NewsBloc, NewsState>(
-              builder: (_, newsState) {
-                if (newsState is NewsLoaded) {
-                  List<News> newsData = newsState.news.sublist(2, 20);
-                  return ListView.builder(
-                    itemCount: newsData.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) => Padding(
-                      padding: EdgeInsets.fromLTRB(5, 20, 5, 10),
-                      child: Container(
-                        height: 100,
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 100,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                      image: NetworkImage(
-                                          newsData[index].urlToImage),
-                                      fit: BoxFit.cover)),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      newsData[index].title,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      newsData[index].description,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
-                                    Text(
-                                      newsData[index].publishedAt,
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
+            height: 100,
+            width: 80,
+            decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(15),
+                image: DecorationImage(
+                    image: NetworkImage(urlToImg), fit: BoxFit.cover)),
           ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold),
+                    maxLines: 3,
+                  ),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  Text(
+                    publishedAt,
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 10,
+                    ),
+                    maxLines: 1,
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );
