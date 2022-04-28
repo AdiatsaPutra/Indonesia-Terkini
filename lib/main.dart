@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Material App',
+      title: 'Materfgfgfgfgfgial App',
       debugShowCheckedModeBanner: false,
       home: BlocProvider(
         create: (context) => NewsBloc()..add(FetchNews()),
